@@ -47,7 +47,7 @@
     </style>
 
     <script>
-        
+        // Redirect to home if already logged in
         const loggedInUser = localStorage.getItem("loggedInUser") || sessionStorage.getItem("loggedInUser");
         if (loggedInUser) {
             window.location.href = "home.html";
