@@ -82,18 +82,29 @@
             color: wheat;
         }
     </style>
-</head>
-
-<body>
     <script>
-    // Prevent back/forward navigation
     (function () {
+        // Push an initial state
         history.pushState(null, null, location.href);
+
+        // Block both back and forward navigation
         window.addEventListener("popstate", function () {
             history.pushState(null, null, location.href);
         });
+
+        // Optional: block forward navigation after redirects
+        window.addEventListener("load", function () {
+            if (window.history.forward) {
+                window.history.forward();
+            }
+        });
     })();
 </script>
+
+</head>
+
+<body>
+    
 
     <center>
         <h2><b>Welcome back!</b></h2>
