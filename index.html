@@ -85,6 +85,16 @@
 </head>
 
 <body>
+    <script>
+    // Prevent back/forward navigation
+    (function () {
+        history.pushState(null, null, location.href);
+        window.addEventListener("popstate", function () {
+            history.pushState(null, null, location.href);
+        });
+    })();
+</script>
+
     <center>
         <h2><b>Welcome back!</b></h2>
     </center>
