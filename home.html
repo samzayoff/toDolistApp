@@ -1,184 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <script src="https://kit.fontawesome.com/0d2181fadc.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .todo-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input[type="text"] {
+      width: calc(100% - 50px);
+      padding: 10px;
+      margin-top: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    button.add-btn {
+      margin-top: 10px;
+      padding: 10px;
+      background: #0c0d0e;
+      color: white;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9f9f9;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    li.completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .delete-btn {
+      padding: 5px 10px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .logout-btn {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
 
+  <script>
+    // Redirect to login if not logged in
+    const currentUser = localStorage.getItem("loggedInUser") || sessionStorage.getItem("loggedInUser");
+    if (!currentUser) {
+      window.location.href = "index.html";
+    }
 
-    <link rel="stylesheet" href="style.css">
+    // Define unload protection function globally so we can remove it later
+    function beforeUnloadHandler(e) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
 
-    <title>To-Do List</title>
-    <style>
-        body {
-            font-family: 'poppins', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .todo-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        input[type="text"] {
-            width: calc(100% - 50px);
-            padding: 10px;
-            font-family: 'poppins';
-            margin-top: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        button.add-btn {
-            padding: 10px;
-            margin-left: 25%;
-            background: #0c0d0e;
-            color: white;
-            width: 50%;
-            font-family: 'poppins';
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            filter: drop-shadow(0px 0px 5px black);
-
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f9f9f9;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-        }
-
-        li.completed {
-            text-decoration: line-through;
-            color: gray;
-        }
-
-        .delete-btn {
-            padding: 10px;
-            margin-left: 5px;
-            background: #0c0d0e;
-            font-family: 'poppins';
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            filter: drop-shadow(0px 0px 5px black);
-        }
-    </style>
+    // Activate protection
+    window.addEventListener("beforeunload", beforeUnloadHandler);
+  </script>
 </head>
 
 <body>
+  <div class="todo-container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <h2>To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task..." />
+    <button class="add-btn" onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
 
-    <div class="todo-container">
-        <h2>To-Do List</h2>
-        <div>
-            <input type="text" id="taskInput" placeholder="Enter a task..." />
-            <br><br>
-            <button class="add-btn" onclick="addTask()">Add</button>
-        </div>
-        <ul id="taskList"></ul>
-        
-<div style="text-align: right; margin-bottom: 10px;">
-    <button onclick="logout()" style="
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-family: 'poppins';
-        filter: drop-shadow(0px 0px 3px black);
-    ">Logout</button>
-</div>
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+    let tasks = JSON.parse(localStorage.getItem(`tasks_${currentUser}`)) || [];
 
-    </div>
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.textContent = task.text;
+        if (task.completed) li.classList.add('completed');
 
-    <script>
-        const taskInput = document.getElementById('taskInput');
-        const taskList = document.getElementById('taskList');
+        li.addEventListener('click', function () {
+          tasks[index].completed = !tasks[index].completed;
+          saveTasks();
+          renderTasks();
+        });
 
-        let currentUser = prompt("Enter your username:");
-        if (!currentUser) currentUser = "guest";
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = function (e) {
+          e.stopPropagation();
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        };
 
-        let tasks = JSON.parse(localStorage.getItem(`tasks_${currentUser}`)) || [];
-
-        function renderTasks() {
-            taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.textContent = task.text;
-                if (task.completed) li.classList.add('completed');
-
-                li.addEventListener('click', function () {
-                    tasks[index].completed = !tasks[index].completed;
-                    saveTasks();
-                    renderTasks();
-                });
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.onclick = function (e) {
-                    e.stopPropagation();
-                    tasks.splice(index, 1);
-                    saveTasks();
-                    renderTasks();
-                };
-
-                li.appendChild(deleteBtn);
-                taskList.appendChild(li);
-            });
-        }
-
-        function addTask() {
-            const taskText = taskInput.value.trim();
-            if (taskText === '') return;
-
-            tasks.push({ text: taskText, completed: false });
-            saveTasks();
-            renderTasks();
-            taskInput.value = '';
-        }
-
-        function saveTasks() {
-            localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(tasks));
-        }
-
-        renderTasks(); // Load user's tasks
-        function logout() {
-        window.location.href = "signUp.html"; 
+        li.appendChild(deleteBtn);
+        taskList.appendChild(li);
+      });
     }
-    </script>
 
+    function addTask() {
+      const taskText = taskInput.value.trim();
+      if (taskText === '') return;
 
+      tasks.push({ text: taskText, completed: false });
+      saveTasks();
+      renderTasks();
+      taskInput.value = '';
+    }
+
+    function saveTasks() {
+      localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(tasks));
+    }
+
+    function logout() {
+      // Allow page to unload normally on logout
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
+      localStorage.removeItem("loggedInUser");
+      sessionStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    renderTasks();
+  </script>
 </body>
-
 </html>
